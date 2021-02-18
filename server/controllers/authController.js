@@ -1,71 +1,71 @@
-const { User } = require("../models")
-const { checkPassword } = require('../helpers/bcrypt')
-const { generateToken } = require('../helpers/jwt')
+const { User } = require("../models");
+const { checkPassword } = require("../helpers/bcrypt");
+const { generateToken } = require("../helpers/jwt");
 
 class authController {
-  static getUser (req, res, next) {
-    const id = +req.params.id
+  static getUser(req, res, next) {
+    const id = +req.params.id;
     User.findByPk(id)
-    .then(data => {
-      if(data) {
-        res.status(200).json(data)
-      } else {
-        throw { name: 'notFound' }
-      }
-    })
-    .catch(err => {
-      next(err)
-    })
+      .then((data) => {
+        if (data) {
+          res.status(200).json(data);
+        } else {
+          throw { name: "notFound" };
+        }
+      })
+      .catch((err) => {
+        next(err);
+      });
   }
 
-  static login (req, res, next) {
-    const { email, password } = req.body
+  static login(req, res, next) {
+    const { email, password } = req.body;
     User.findOne({
-      where: { email }
+      where: { email },
     })
-      .then(data => {
-        if(!data) {
-          throw { name: "invalidEmailPassword" }
+      .then((data) => {
+        if (!data) {
+          throw { name: "invalidEmailPassword" };
         }
-        const match = checkPassword(password, data.password)
+        const match = checkPassword(password, data.password);
         if (match) {
           const payload = {
             id: data.id,
             email: data.email,
             first_name: data.first_name,
-            last_name: data.last_name
-          }
-          const access_token = generateToken(payload)
-          res.status(200).json({ access_token })
+            last_name: data.last_name,
+          };
+          const access_token = generateToken(payload);
+          res.status(200).json({ access_token });
         } else {
-          throw { name: "invalidEmailPassword" }
+          throw { name: "invalidEmailPassword" };
         }
       })
-      .catch(err => {
-        next(err)
-      })
+      .catch((err) => {
+        next(err);
+      });
   }
 
-  static register (req, res, next) {
+  static register(req, res, next) {
     const newUser = {
       email: data.email,
       password: data.password,
       first_name: data.first_name,
-      last_name: data.last_name
-    }
+      last_name: data.last_name,
+    };
     User.create(newUser)
-      .then(data => {
+      .then((data) => {
         res.status(201).json({
           id: data.id,
           email: data.email,
           first_name: data.first_name,
-          last_name: data.last_name
-        })
+          last_name: data.last_name,
+        });
       })
-      .catch(err => {
-        next(err)
-      })
+      .catch((err) => {
+        next(err);
+      });
   }
 }
 
-module.exports = authController
+module.exports = authController;
