@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      FlipCard.belongsTo(models.User, {
+        foreignKey: 'user_id'
+      })
     }
   };
   FlipCard.init({

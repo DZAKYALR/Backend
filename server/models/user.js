@@ -12,12 +12,50 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.FlipCard, {
+        foreignKey: 'user_id',
+        targetKey: 'id'
+      })
     }
   };
   User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    firstName: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEMail: {
+          args: true,
+          msg: 'invalid email format'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'please fill the email'
+        },
+        
+      }
+    },
+    password:{
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'please fill the password'
+        },
+        valid(value) {
+          if(!value || value <= 6) {
+            throw new Error('Password must be greater than 6')
+          }
+        }
+      }
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'first name cannot be empty'
+        }
+      }
+    },
     lastName: DataTypes.STRING
   }, {
     sequelize,
