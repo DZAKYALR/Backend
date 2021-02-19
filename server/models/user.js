@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: {
           isEmail: {
-            args: [true],
+            args: true,
             msg: "invalid email format",
           },
           notEmpty: {
@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      firstName: {
+      first_name: {
         type: DataTypes.STRING,
         validate: {
           notEmpty: {
@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      lastName: DataTypes.STRING,
+      last_name: DataTypes.STRING,
     },
     {
       sequelize,

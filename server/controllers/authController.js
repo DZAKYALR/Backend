@@ -52,16 +52,16 @@ class authController {
     const newUser = {
       email: data.email,
       password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
+      first_name: data.first_name,
+      last_name: data.last_name,
     };
     User.create(newUser)
       .then((data) => {
         res.status(201).json({
           id: data.id,
           email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
+          first_name: data.first_name,
+          last_name: data.last_name,
         });
       })
       .catch((err) => {
