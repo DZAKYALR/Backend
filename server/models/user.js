@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.FlipCard, {
+      User.hasMany(models.SetCard, {
         foreignKey: "user_id",
         targetKey: "id",
       });
