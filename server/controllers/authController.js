@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const { checkPassword } = require("../helpers/bcrypt");
 const { generateToken } = require("../helpers/jwt");
+const { sendEmail } = require('../helpers/nodeMailer')
 
 class authController {
   static getUser(req, res, next) {
@@ -57,6 +58,7 @@ class authController {
     };
     User.create(newUser)
       .then((data) => {
+        sendEmail(data.email)
         res.status(201).json({
           id: data.id,
           email: data.email,
