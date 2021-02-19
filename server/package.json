@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test_product": "NODE_ENV=test npx jest __test__/product.test.js",
+    "test_login": "NODE_ENV=test npx jest __test__/login.test.js",
     "test_user": "NODE_ENV=test npx jest __test__/user.test.js",
     "start": "node bin/http.js",
     "dev": "NODE_ENV=development npx nodemon bin/http.js",
