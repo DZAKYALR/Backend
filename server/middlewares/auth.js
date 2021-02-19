@@ -2,33 +2,34 @@ const { User, FlipCard } = require('../models')
 const { checkToken } = require('../helpers/jwt')
 
 function authenticate(req, res, next)  {
+  console.log('auth nih')
   try {
-      let decoded = checkToken(req.headers.access_token)
-      User.findOne({
-          where : {
-              email: decoded.email 
-          }
-      })
-      .then(userLogin => {
-          if (!userLogin) {
-              next({
-                  name: "please login first" 
-              })
-          } else {
-              req.user = {
-                  id: +userLogin.id
-              }
-              next()
-          }
-      })
-      .catch(err => {
-          next(err.message)
-      })
-      
+    let decoded = checkToken(req.headers.access_token)
+    User.findOne({
+      where : {
+        email: decoded.email 
+      }
+    })
+    .then(userLogin => {
+      console.log('auth 2')
+      if (!userLogin) {
+        next({ name: "unauthorize" })
+      } else {
+        console.log('auth 3')
+        req.user = {
+            id: +userLogin.id
+        }
+        next()
+      }
+    })
+    .catch(err => {
+      console.log('auth 4')
+      next(err)
+    })
+    
   } catch (err) {
-      next({
-          name: "please login first" 
-      })
+    console.log('auth 5')
+    next({ name: "unauthorize" })
       
   }
 }
