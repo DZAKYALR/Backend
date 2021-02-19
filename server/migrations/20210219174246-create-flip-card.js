@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('FlipCards', {
@@ -8,22 +9,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.INTEGER
+      set_card_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'SetCards',
+          key: 'id'
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
       hint: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       answer: {
-        type: Sequelize.STRING
-      },
-      category: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       type: {
-        type: Sequelize.STRING
-      },
-      title: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       createdAt: {

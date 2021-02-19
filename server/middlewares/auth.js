@@ -1,4 +1,4 @@
-const { User, FlipCard } = require("../models");
+const { User, FlipCard, SetCard } = require("../models");
 const { checkToken } = require("../helpers/jwt");
 
 function authenticate(req, res, next) {
@@ -32,9 +32,48 @@ function authenticate(req, res, next) {
   }
 }
 
-function authorize(req, res, next) {
-  console.log("masuk ke auth");
+function authorizeFlipCard(req, res, next) {
   FlipCard.findOne({
+    where: {
+      id: +req.params.id,
+    },
+  })
+    .then((data) => {
+      if (!data.set_card_id) {
+        next({
+          name: "ResourceNotFound",
+        });
+      } else {
+          SetCard.findOne({
+            where: {
+              id: data.set_card_id,
+            },
+          })
+          .then((setCard) => {
+            if (!setCard) {
+              next({
+                name: "ResourceNotFound",
+              });
+            } else {
+              if (+req.user.id === +setCard.user_id) {
+                next()
+              }
+            }
+          })
+          .catch((err) => {
+            next(err);
+          });
+        }
+      
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
+function authorizeSetCard(req, res, next) {
+  console.log("masuk ke auth");
+  SetCard.findOne({
     where: {
       id: +req.params.id,
     },
@@ -62,5 +101,6 @@ function authorize(req, res, next) {
 
 module.exports = {
   authenticate,
-  authorize,
+  authorizeSetCard,
+  authorizeFlipCard
 };

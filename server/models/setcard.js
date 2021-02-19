@@ -3,26 +3,29 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class FlipCard extends Model {
+  class SetCard extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      FlipCard.belongsTo(models.SetCard, { 
-        foreignKey: "set_card_id" 
+      SetCard.belongsTo(models.User, { 
+        foreignKey: "user_id" 
       })
+      SetCard.hasMany(models.FlipCard, {
+        foreignKey: "set_card_id",
+        targetKey: "id",
+      });
     }
   };
-  FlipCard.init({
-    set_card_id: DataTypes.INTEGER,
-    hint: DataTypes.STRING,
-    answer: DataTypes.STRING,
-    type: DataTypes.STRING
+  SetCard.init({
+    title: DataTypes.STRING,
+    user_id: DataTypes.INTEGER,
+    category: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'FlipCard',
+    modelName: 'SetCard',
   });
-  return FlipCard;
+  return SetCard;
 };
