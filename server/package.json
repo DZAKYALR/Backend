@@ -4,6 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "test_flip_cards": "NODE_ENV=test npx jest __test__/flipCard.test.js",
+    "test_set_card": "NODE_ENV=test npx jest __test__/setCard.test.js",
     "test_login": "NODE_ENV=test npx jest __test__/login.test.js",
     "test_user": "NODE_ENV=test npx jest __test__/user.test.js",
     "test_getuser": "NODE_ENV=test npx jest __test__/getuser.test.js",

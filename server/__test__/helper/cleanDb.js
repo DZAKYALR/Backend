@@ -1,4 +1,4 @@
-const { User, Product } = require("../../models/index");
+const { User, SetCard } = require("../../models/index");
 
 function cleanUser() {
   if (process.env.NODE_ENV == "test") {
@@ -6,4 +6,10 @@ function cleanUser() {
   }
 }
 
-module.exports = { cleanUser };
+function cleanSetCard() {
+  if (process.env.NODE_ENV == "test") {
+    return SetCard.destroy({ where: {} });
+  }
+}
+
+module.exports = { cleanUser, cleanSetCard };

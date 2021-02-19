@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class SetCard extends Model {
     /**
@@ -10,22 +8,49 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      SetCard.belongsTo(models.User, { 
-        foreignKey: "user_id" 
-      })
+      SetCard.belongsTo(models.User, {
+        foreignKey: "user_id",
+      });
       SetCard.hasMany(models.FlipCard, {
         foreignKey: "set_card_id",
         targetKey: "id",
       });
     }
-  };
-  SetCard.init({
-    title: DataTypes.STRING,
-    user_id: DataTypes.INTEGER,
-    category: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'SetCard',
-  });
+  }
+  SetCard.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Title is required !",
+          },
+        },
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "User id is required !",
+          },
+        },
+      },
+      category: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "Category is required !",
+          },
+        },
+      },
+    },
+    {
+      sequelize,
+      modelName: "SetCard",
+    }
+  );
   return SetCard;
 };

@@ -2,10 +2,21 @@ const req = require("supertest");
 const app = require("../app");
 const { cleanUser } = require("./helper/cleanDb");
 const { seederUser } = require("./helper/seeder.js");
+const { generateToken } = require("../helpers/jwt");
+
+let access_token = "";
+let id = "";
 
 beforeAll((done) => {
   seederUser()
     .then((data) => {
+      access_token = generateToken({
+        email: "admin1@mail.com",
+        password: "12345678",
+        first_name: "some",
+        last_name: "one",
+      });
+      id = data.id;
       done();
     })
     .catch((err) => {
@@ -39,7 +50,7 @@ describe("POST /register", function () {
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
-        //assert <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        //assert
         expect(res.statusCode).toEqual(400);
         expect(res.body.errors).toEqual(
           expect.arrayContaining(["Email already registered"])
@@ -215,6 +226,167 @@ describe("POST /register", function () {
             "please fill the password",
             "first name cannot be empty",
           ])
+        );
+        done();
+      });
+  });
+});
+
+describe("POST /login", function () {
+  it("valid login should send response 200 status code", function (done) {
+    //setup
+    const body = {
+      email: "a@gmail.com",
+      password: "123456",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(200);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("access_token");
+        expect(typeof res.body.access_token).toEqual("string");
+        done();
+      });
+  });
+
+  //invalid password
+  it("invalid password should send response 401 status code", function (done) {
+    //setup
+    const body = {
+      email: "a@gmail.com",
+      password: "qwerty",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        console.log(err);
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"])
+        );
+        done();
+      });
+  });
+
+  //invalid email
+  it("invalid email should send response 401 status code", function (done) {
+    //setup
+    const body = {
+      email: "z@gmail.com",
+      password: "123456",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"])
+        );
+        done();
+      });
+  });
+
+  //empty email
+  it("empty email should send response 401 status code", function (done) {
+    //setup
+    const body = {
+      email: "",
+      password: "123456",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"])
+        );
+        done();
+      });
+  });
+
+  //empty password
+  it("empty password should send response 401 status code", function (done) {
+    //setup
+    const body = {
+      email: "a@gmail.com",
+      password: "",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"])
+        );
+        done();
+      });
+  });
+});
+
+describe("GET /user/:id", function () {
+  //valid
+  it("should send response 200 status code", function (done) {
+    //execute
+    req(app)
+      .get(`/user/${id}`)
+      // .set('access_token', access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(200);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("id");
+        expect(res.body).toHaveProperty("email");
+        expect(res.body).toHaveProperty("first_name");
+        expect(res.body).toHaveProperty("last_name");
+        expect(typeof res.body.id).toEqual("number");
+        expect(typeof res.body.first_name).toEqual("string");
+        expect(typeof res.body.last_name).toEqual("string");
+        expect(typeof res.body.email).toEqual("string");
+        done();
+      });
+  });
+  it("should send response 404 status code not found data", function (done) {
+    //execute
+    req(app)
+      .get(`/user/1`)
+      // .set('access_token', access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(404);
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["ResourceNotFound"])
         );
         done();
       });
