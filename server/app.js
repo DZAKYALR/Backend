@@ -4,6 +4,7 @@ const routs = require("./routes/index");
 const cors = require("cors");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(routs);
 app.use(cors());
 

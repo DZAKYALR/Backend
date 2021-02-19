@@ -8,7 +8,7 @@ class authController {
     User.findByPk(id)
       .then((data) => {
         if (data) {
-          res.status(200).json(data);
+          res.status(200).json(data.User);
         } else {
           throw { name: "notFound" };
         }
@@ -32,8 +32,8 @@ class authController {
           const payload = {
             id: data.id,
             email: data.email,
-            first_name: data.first_name,
-            last_name: data.last_name,
+            firstName: data.firstName,
+            lastName: data.lastName,
           };
           const access_token = generateToken(payload);
           res.status(200).json({ access_token });
@@ -47,19 +47,21 @@ class authController {
   }
 
   static register(req, res, next) {
+    let data = req.body;
+
     const newUser = {
       email: data.email,
       password: data.password,
-      first_name: data.first_name,
-      last_name: data.last_name,
+      firstName: data.firstName,
+      lastName: data.lastName,
     };
     User.create(newUser)
       .then((data) => {
         res.status(201).json({
           id: data.id,
           email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name,
+          firstName: data.firstName,
+          lastName: data.lastName,
         });
       })
       .catch((err) => {

@@ -2,7 +2,7 @@ const req = require("supertest");
 const app = require("../app");
 const { cleanUser } = require("./helper/cleanDb");
 
-beforeAll((done) => {});
+// beforeAll((done) => {});
 
 afterAll((done) => {
   cleanUser()
@@ -21,7 +21,7 @@ describe("POST /register", function () {
     const body = {
       first_name: "some",
       last_name: "one",
-      email: "a@gmail.com",
+      email: "my_email@gmail.com",
       password: "1234567",
     };
     //execute
@@ -30,7 +30,7 @@ describe("POST /register", function () {
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
-
+        console.log(res.statusCode);
         //assert
         expect(res.statusCode).toEqual(201);
         expect(typeof res.body).toEqual("object");
@@ -46,7 +46,7 @@ describe("POST /register", function () {
       });
   });
 
-  //first_name empty
+  // first_name empty
   it("first_name empty should send response 400 status code", function (done) {
     //setup
     const body = {
