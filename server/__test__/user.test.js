@@ -1,8 +1,17 @@
 const req = require("supertest");
 const app = require("../app");
 const { cleanUser } = require("./helper/cleanDb");
+const { seederUser } = require("./helper/seeder.js");
 
-// beforeAll((done) => {});
+beforeAll((done) => {
+  seederUser()
+    .then((data) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
 
 afterAll((done) => {
   cleanUser()
@@ -15,6 +24,30 @@ afterAll((done) => {
 });
 
 describe("POST /register", function () {
+  //duplicate email
+  it("Duplicate email should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      first_name: "some",
+      last_name: "one",
+      email: "a@gmail.com",
+      password: "1234567",
+    };
+    //execute
+    req(app)
+      .post("/register")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        expect(res.statusCode).toEqual(400);
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Email already registered"])
+        );
+        done();
+      });
+  });
+
   //valid
   it("valid register should send response 201 status code", function (done) {
     //setup

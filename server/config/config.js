@@ -13,14 +13,14 @@ const dialect = process.env["DB_DIALECT_" + uppercasedEnv];
 module.exports = {
   development: {
     username: "postgres",
-    password: "root",
+    password: "postgres",
     database: "flip_card",
     host: "127.0.0.1",
     dialect: "postgres",
   },
   test: {
     username: "postgres",
-    password: "root",
+    password: "postgres",
     database: "flip_card_test",
     host: "127.0.0.1",
     dialect: "postgres",

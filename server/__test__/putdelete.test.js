@@ -2,12 +2,12 @@ const req = require("supertest");
 const app = require("../app");
 const { cleanUser } = require("./helper/cleanDb");
 const { seederUser } = require("./helper/seeder");
-const { generateToken } = require('../helpers/jwt');
-const { User, FlipCard  } = require("../models/index");
+const { generateToken } = require("../helpers/jwt");
+const { User, FlipCard } = require("../models/index");
 
-let access_token = ''
-let id = ''
-let card_id = ''
+let access_token = "";
+let id = "";
+let card_id = "";
 
 afterAll((done) => {
   cleanUser()
@@ -31,20 +31,20 @@ beforeAll((done) => {
         first_name: data.first_name,
         last_name: data.last_name,
       };
-      access_token = generateToken(user)
-      id = +data.id
+      access_token = generateToken(user);
+      id = +data.id;
       return FlipCard.create({
-        hint: 'string',
-        answer: 'string',
-        category: 'string',
-        type: 'string',
-        title: 'string',
-        user_id: id
-      })
+        hint: "string",
+        answer: "string",
+        category: "string",
+        type: "string",
+        title: "string",
+        user_id: id,
+      });
     })
-    .then(data => {
-      console.log(data, '<<<data card')
-      card_id = +data.id
+    .then((data) => {
+      console.log(data, "<<<data card");
+      card_id = +data.id;
       done();
     })
     .catch((err) => {
@@ -53,20 +53,37 @@ beforeAll((done) => {
 });
 
 describe("PUT /cards/:id", function () {
+  //invalid params
+  it("should send response 404 status code not found data", function (done) {
+    //execute
+    req(app)
+      .put(`/cards/0`)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(404);
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["ResourceNotFound"])
+        );
+        done();
+      });
+  });
+
   //valid
   it("should send response 200 status code", function (done) {
     const body = {
-      hint: 'string',
-      answer: 'string',
-      category: 'string',
-      type: 'string',
-      title: 'string',
-      user_id: id
+      hint: "string",
+      answer: "string",
+      category: "string",
+      type: "string",
+      title: "string",
+      user_id: id,
     };
     //execute
     req(app)
       .put(`/cards/${card_id}`)
-      .set('access_token', access_token)
+      .set("access_token", access_token)
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
@@ -80,17 +97,17 @@ describe("PUT /cards/:id", function () {
 
   it("No Input fields (400)", function (done) {
     const body = {
-      hint: '',
-      answer: '',
-      category: '',
-      type: '',
-      title: '',
-      user_id: id
+      hint: "",
+      answer: "",
+      category: "",
+      type: "",
+      title: "",
+      user_id: id,
     };
     //execute
     req(app)
       .put(`/cards/${card_id}`)
-      .set('access_token', access_token)
+      .set("access_token", access_token)
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
@@ -99,25 +116,31 @@ describe("PUT /cards/:id", function () {
         expect(res.statusCode).toEqual(400);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(["hint is required", "answer is required", "category is required", "type is required", "title is required"])
-        )
+          expect.arrayContaining([
+            "hint is required",
+            "answer is required",
+            "category is required",
+            "type is required",
+            "title is required",
+          ])
+        );
         done();
       });
   });
 
   it("No access_token (401)", function (done) {
     const body = {
-      hint: 'string',
-      answer: 'string',
-      category: 'string',
-      type: 'string',
-      title: 'string',
-      user_id: id
+      hint: "string",
+      answer: "string",
+      category: "string",
+      type: "string",
+      title: "string",
+      user_id: id,
     };
     //execute
     req(app)
       .put(`/cards/${card_id}`)
-      .set('access_token', "")
+      .set("access_token", "")
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
@@ -125,25 +148,25 @@ describe("PUT /cards/:id", function () {
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(['unauthorize'])
-        )
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
 
   it("Incorrect access_token (401)", function (done) {
     const body = {
-      hint: 'string',
-      answer: 'string',
-      category: 'string',
-      type: 'string',
-      title: 'string',
-      user_id: id
+      hint: "string",
+      answer: "string",
+      category: "string",
+      type: "string",
+      title: "string",
+      user_id: id,
     };
     //execute
     req(app)
       .put(`/cards/${card_id}`)
-      .set('access_token', "asdsasad.r32refe.awefs")
+      .set("access_token", "asdsasad.r32refe.awefs")
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
@@ -151,20 +174,37 @@ describe("PUT /cards/:id", function () {
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(['unauthorize'])
-        )
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
 });
 
 describe("DELETE /cards/:id", function () {
+  //invalid params
+  it("should send response 404 status code not found data", function (done) {
+    //execute
+    req(app)
+      .delete(`/cards/0`)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(404);
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["ResourceNotFound"])
+        );
+        done();
+      });
+  });
+
   //valid
   it("should send response 200 status code", function (done) {
     //execute
     req(app)
       .delete(`/cards/${card_id}`)
-      .set('access_token', access_token)
+      .set("access_token", access_token)
       .end(function (err, res) {
         if (err) done(err);
         console.log(res.statusCode);
@@ -179,15 +219,15 @@ describe("DELETE /cards/:id", function () {
     //execute
     req(app)
       .delete(`/cards/${card_id}`)
-      .set('access_token', "")
+      .set("access_token", "")
       .end(function (err, res) {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(['unauthorize'])
-        )
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
@@ -196,15 +236,15 @@ describe("DELETE /cards/:id", function () {
     //execute
     req(app)
       .delete(`/cards/${card_id}`)
-      .set('access_token', "asdsasad.r32refe.awefs")
+      .set("access_token", "asdsasad.r32refe.awefs")
       .end(function (err, res) {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(['unauthorize'])
-        )
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
