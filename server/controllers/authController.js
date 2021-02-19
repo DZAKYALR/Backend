@@ -1,7 +1,7 @@
 const { User } = require("../models");
 const { checkPassword } = require("../helpers/bcrypt");
 const { generateToken } = require("../helpers/jwt");
-const { sendEmail } = require('../helpers/nodeMailer')
+const { sendEmail } = require("../helpers/nodeMailer");
 
 class authController {
   static getUser(req, res, next) {
@@ -58,13 +58,17 @@ class authController {
     };
     User.create(newUser)
       .then((data) => {
-        sendEmail(data.email)
-        res.status(201).json({
-          id: data.id,
-          email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name,
-        });
+        let sendMail = sendEmail(data.email);
+        if (sendMail) {
+          res.status(201).json({
+            id: data.id,
+            email: data.email,
+            first_name: data.first_name,
+            last_name: data.last_name,
+          });
+        } else {
+          next({ name: "sendMailError" });
+        }
       })
       .catch((err) => {
         next(err);
