@@ -30,7 +30,6 @@ describe("POST /register", function () {
       .send(body)
       .end(function (err, res) {
         if (err) done(err);
-        console.log(res.statusCode);
         //assert
         expect(res.statusCode).toEqual(201);
         expect(typeof res.body).toEqual("object");
