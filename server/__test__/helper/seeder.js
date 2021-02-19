@@ -2,7 +2,7 @@ const { User } = require("../../models/index");
 
 function seederUser(done) {
   const body = {
-    firs_tname: "some",
+    first_name: "some",
     last_name: "one",
     email: "a@gmail.com",
     password: "123456",

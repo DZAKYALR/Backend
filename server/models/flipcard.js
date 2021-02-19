@@ -17,12 +17,90 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   FlipCard.init({
-    user_id: DataTypes.INTEGER,
-    hint: DataTypes.STRING,
-    answer: DataTypes.STRING,
-    category: DataTypes.STRING,
-    type: DataTypes.STRING,
-    title: DataTypes.STRING
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "user id is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'user id is required'
+        }
+      }
+    },
+    hint: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "hint is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'hint is required'
+        }
+      }
+    },
+    answer: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "answer is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'answer is required'
+        }
+      }
+    },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "category is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'category is required'
+        }
+      }
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "type is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'type is required'
+        }
+      }
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          args: true,
+          msg: "title is required"
+        },
+        notEmpty: {
+          args: true,
+          msg: 'title is required'
+        }
+      }
+    },
   }, {
     sequelize,
     modelName: 'FlipCard',
