@@ -6,6 +6,7 @@
   "scripts": {
     "test_product": "NODE_ENV=test npx jest __test__/product.test.js",
     "test_user": "NODE_ENV=test npx jest __test__/user.test.js",
+    "coverage": "NODE_ENV=test npx jest --coverage",
     "start": "node bin/http.js",
     "dev": "NODE_ENV=development npx nodemon bin/http.js",
     "db:create": "npx sequelize-cli db:create",

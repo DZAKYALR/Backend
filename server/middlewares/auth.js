@@ -1,42 +1,63 @@
-const { User } = require('../models')
+const { User, FlipCard } = require('../models')
 const { checkToken } = require('../helpers/jwt')
 
-function authenticate(req, res, next) {
+function authenticate(req, res, next)  {
   try {
-    let decoded = checkToken(req.headers.access_token)
-    User.findOne({
-      where: { email: decoded.email }
-    })
-    .then(data => {
-      if(!data) {
-        next({ name: 'needLogin' })
-      } else {
-        req.user = data
-        next()
-      }
-    })
-    .catch(err => {
-      next(err)
-    })
-  }
-  catch(err) {
-    next({ name: 'needLogin'})
+      let decoded = checkToken(req.headers.access_token)
+      User.findOne({
+          where : {
+              email: decoded.email 
+          }
+      })
+      .then(userLogin => {
+          if (!userLogin) {
+              next({
+                  name: "please login first" 
+              })
+          } else {
+              req.user = {
+                  id: +userLogin.id
+              }
+              next()
+          }
+      })
+      .catch(err => {
+          next(err.message)
+      })
+      
+  } catch (err) {
+      next({
+          name: "please login first" 
+      })
+      
   }
 }
 
 function authorize(req, res, next) {
-  Todo.findOne({
-    where: { id: req.params.id }
+  console.log('masuk ke auth');
+  FlipCard.findOne({
+      where : {
+          id: +req.params.id
+      }
   })
   .then(data => {
-    if(!data || data.user_id !== req.user.id) {
-      next({ name: 'needAccess' })
-    } else {
-      next()
-    }
+      if (!data) {
+          next({
+              name: "ResourceNotFound" 
+          })
+      } else {
+          if (data.user_id === +req.user.id) {
+              next()
+          } else {
+              console.log('unauthorize');
+              next({
+                  name: "unauthorize" 
+              })
+          }
+      }
   })
   .catch(err => {
-    next(err)
+      next(err)
   })
 }
 
