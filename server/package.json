@@ -6,6 +6,7 @@
   "scripts": {
     "test_login": "NODE_ENV=test npx jest __test__/login.test.js",
     "test_user": "NODE_ENV=test npx jest __test__/user.test.js",
+    "test_getuser": "NODE_ENV=test npx jest __test__/getuser.test.js",
     "coverage": "NODE_ENV=test npx jest --coverage",
     "start": "node bin/http.js",
     "dev": "NODE_ENV=development npx nodemon bin/http.js",
