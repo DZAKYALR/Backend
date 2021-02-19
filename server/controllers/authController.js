@@ -32,8 +32,8 @@ class authController {
           const payload = {
             id: data.id,
             email: data.email,
-            firstName: data.firstName,
-            lastName: data.lastName,
+            first_name: data.first_name,
+            last_name: data.last_name,
           };
           const access_token = generateToken(payload);
           res.status(200).json({ access_token });

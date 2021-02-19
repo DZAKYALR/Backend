@@ -72,32 +72,6 @@ describe("POST /register", function () {
       });
   });
 
-  //last_name empty
-  // it("last_name empty should send response 400 status code", function (done) {
-  //   //setup
-  //   const body = {
-  //     first_name: "some",
-  //     last_name: "",
-  //     email: "a@gmail.com",
-  //     password: "123456",
-  //   };
-  //   //execute
-  //   req(app)
-  //     .post("/register")
-  //     .send(body)
-  //     .end(function (err, res) {
-  //       if (err) done(err);
-
-  //       //assert
-  //       expect(res.statusCode).toEqual(400);
-  //       expect(typeof res.body).toEqual("object");
-  //       expect(res.body.errors).toEqual(
-  //         expect.arrayContaining(["invalid email format", "please fill the email"])
-  //       );
-  //       done();
-  //     });
-  // });
-
   //email empty
   it("email empty should send response 400 status code", function (done) {
     //setup
@@ -118,7 +92,10 @@ describe("POST /register", function () {
         expect(res.statusCode).toEqual(400);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(["invalid email format", "please fill the email"])
+          expect.arrayContaining([
+            "invalid email format",
+            "please fill the email",
+          ])
         );
         done();
       });
@@ -144,7 +121,10 @@ describe("POST /register", function () {
         expect(res.statusCode).toEqual(400);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(["Password must be greater than 6", "please fill the password"])
+          expect.arrayContaining([
+            "Password must be greater than 6",
+            "please fill the password",
+          ])
         );
         done();
       });
@@ -196,7 +176,13 @@ describe("POST /register", function () {
         expect(res.statusCode).toEqual(400);
         expect(typeof res.body).toEqual("object");
         expect(res.body.errors).toEqual(
-          expect.arrayContaining(["Password must be greater than 6", "invalid email format", "please fill the email", "please fill the password", "first name cannot be empty"])
+          expect.arrayContaining([
+            "Password must be greater than 6",
+            "invalid email format",
+            "please fill the email",
+            "please fill the password",
+            "first name cannot be empty",
+          ])
         );
         done();
       });

@@ -1,4 +1,6 @@
 const errorHandler = (err, req, res, next) => {
+    console.log(err);
+
     switch (err.name) {
         case "SequelizeValidationError":
             let error = []
@@ -19,8 +21,8 @@ const errorHandler = (err, req, res, next) => {
         case "SequelizeDatabaseError":
             res.status(400).json({ errors: [ err.name ] })
             break;
-        case "invalid email / password":
-            res.status(401).json({ errors: [ "invalid email / password" ] })
+        case "invalidEmailPassword":
+            res.status(401).json({ errors: [ "invalidEmailPassword" ] })
             break;
         case "unauthorize":
             res.status(401).json({ errors: [ "unauthorize" ] })
