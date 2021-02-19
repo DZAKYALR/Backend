@@ -9,9 +9,9 @@ class authController {
     User.findByPk(id)
       .then((data) => {
         if (data) {
-          res.status(200).json(data.User);
+          res.status(200).json(data);
         } else {
-          throw { name: "notFound" };
+          throw { name: "ResourceNotFound" };
         }
       })
       .catch((err) => {
