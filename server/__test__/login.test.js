@@ -77,9 +77,8 @@ describe("POST /login", function () {
         //assert
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
-        expect(res.body).toHaveProperty("message");
-        expect(typeof res.body.message).toEqual("string");
-        expect(res.body.message).toEqual("Invalid email or password");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"]));
         done();
       });
   });
@@ -101,15 +100,14 @@ describe("POST /login", function () {
         //assert
         expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
-        expect(res.body).toHaveProperty("message");
-        expect(typeof res.body.message).toEqual("string");
-        expect(res.body.message).toEqual("Invalid email or password");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"]));
         done();
       });
   });
 
   //empty email
-  it("empty email should send response 400 status code", function (done) {
+  it("empty email should send response 401 status code", function (done) {
     //setup
     const body = {
       email: "",
@@ -123,17 +121,16 @@ describe("POST /login", function () {
         if (err) done(err);
 
         //assert
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
-        expect(res.body).toHaveProperty("message");
-        expect(typeof res.body.message).toEqual("string");
-        expect(res.body.message).toEqual("Email is required");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"]));
         done();
       });
   });
 
   //empty password
-  it("empty password should send response 400 status code", function (done) {
+  it("empty password should send response 401 status code", function (done) {
     //setup
     const body = {
       email: "a@gmail.com",
@@ -147,33 +144,13 @@ describe("POST /login", function () {
         if (err) done(err);
 
         //assert
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(401);
         expect(typeof res.body).toEqual("object");
-        expect(res.body).toHaveProperty("message");
-        expect(typeof res.body.message).toEqual("string");
-        expect(res.body.message).toEqual("Password is required");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"]));
         done();
       });
   });
 });
 
-describe("POST /checktoken", function () {
-  //checktoken
-  it("valid checktoken should send response 201 status code", function (done) {
-    //setup
-    //execute
-    req(app)
-      .post(`/checktoken`)
-      .send()
-      .set("accesstoken", accesstoken)
-      .end(function (err, res) {
-        if (err) done(err);
 
-        //assert
-        expect(res.statusCode).toEqual(200);
-        expect(typeof res.body).toEqual("string");
-        expect(res.body).toEqual("admin");
-        done();
-      });
-  });
-});
