@@ -8,7 +8,7 @@ const { User, SetCard } = require("../models/index");
 let access_token = "";
 let id = "";
 let set_card_id = "";
-let query = "img";
+let query = "";
 
 afterAll((done) => {
   cleanUser()
@@ -41,6 +41,7 @@ beforeAll((done) => {
       });
     })
     .then((data) => {
+      query = data.title;
       set_card_id = data.id;
       done();
     })
@@ -60,6 +61,47 @@ describe("GET /setcard", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(200);
+        expect(typeof res.body[0]).toEqual("object");
+        expect(res.body[0]).toHaveProperty("category");
+        expect(res.body[0]).toHaveProperty("title");
+        expect(res.body[0]).toHaveProperty("user_id");
+        expect(typeof res.body[0].category).toEqual("string");
+        expect(typeof res.body[0].title).toEqual("string");
+        expect(typeof res.body[0].user_id).toEqual("number");
+        done();
+      });
+  });
+
+  it("No access_token (401)", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard`)
+      .set("access_token", "")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
+        done();
+      });
+  });
+
+  it("Incorrect access_token (401)", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard`)
+      .set("access_token", "asdsasad.r32refe.awefs")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
@@ -76,6 +118,47 @@ describe("GET /setcard/:query", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(200);
+        expect(typeof res.body[0]).toEqual("object");
+        expect(res.body[0]).toHaveProperty("category");
+        expect(res.body[0]).toHaveProperty("title");
+        expect(res.body[0]).toHaveProperty("user_id");
+        expect(typeof res.body[0].category).toEqual("string");
+        expect(typeof res.body[0].title).toEqual("string");
+        expect(typeof res.body[0].user_id).toEqual("number");
+        done();
+      });
+  });
+
+  it("No access_token (401)", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard/${query}`)
+      .set("access_token", "")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
+        done();
+      });
+  });
+
+  it("Incorrect access_token (401)", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard/${query}`)
+      .set("access_token", "asdsasad.r32refe.awefs")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
@@ -99,6 +182,13 @@ describe("POST /setcard", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(201);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("category");
+        expect(res.body).toHaveProperty("title");
+        expect(res.body).toHaveProperty("user_id");
+        expect(typeof res.body.category).toEqual("string");
+        expect(typeof res.body.title).toEqual("string");
+        expect(typeof res.body.user_id).toEqual("number");
         done();
       });
   });
@@ -106,7 +196,7 @@ describe("POST /setcard", function () {
 
 describe("PUT /setcard", function () {
   //valid
-  it("Find set card should send response 200 status code", function (done) {
+  it("Put set card should send response 200 status code", function (done) {
     //setup
     const body = {
       category: "Animals2",
@@ -122,6 +212,13 @@ describe("PUT /setcard", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(200);
+        expect(typeof res.body[0]).toEqual("object");
+        expect(res.body[0]).toHaveProperty("category");
+        expect(res.body[0]).toHaveProperty("title");
+        expect(res.body[0]).toHaveProperty("user_id");
+        expect(typeof res.body[0].category).toEqual("string");
+        expect(typeof res.body[0].title).toEqual("string");
+        expect(typeof res.body[0].user_id).toEqual("number");
         done();
       });
   });
@@ -139,6 +236,42 @@ describe("DELETE /setcard/:id", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty("name");
+        expect(typeof res.body.name).toEqual("string");
+        done();
+      });
+  });
+
+  it("No access_token (401)", function (done) {
+    //execute
+    req(app)
+      .delete(`/setcard/${set_card_id}`)
+      .set("access_token", "")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
+        done();
+      });
+  });
+
+  it("Incorrect access_token (401)", function (done) {
+    //execute
+    req(app)
+      .delete(`/setcard/${set_card_id}`)
+      .set("access_token", "asdsasad.r32refe.awefs")
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
+        );
         done();
       });
   });
