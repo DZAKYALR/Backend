@@ -29,10 +29,16 @@ class ControllerSetCard {
     }
 
     static insert(req, res, next) {
+        let user_id = null
+        if (req.body.user_id || req.body.user_id === null || req.body.user_id === '') {
+            user_id = req.body.user_id
+        } else {
+            user_id = +req.user.id
+        }
         let obj = {
             category: req.body.category,
             title: req.body.title,
-            user_id: req.user.id,
+            user_id: user_id,
         };
         SetCard.create(obj)
             .then((data) => res.status(201).json(data))
