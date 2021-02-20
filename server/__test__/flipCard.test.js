@@ -106,6 +106,8 @@ describe("PUT /cards/:set_card_id", function () {
       });
   });
 
+
+
   it("Put if hint is empty  set cards by card id should send response 400 status code", function (done) {
     let body = {
       hint: "",
@@ -126,6 +128,31 @@ describe("PUT /cards/:set_card_id", function () {
         expect(res.body).toHaveProperty("errors");
         expect(res.body.errors).toEqual(
           expect.arrayContaining(["Hint is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Put if access_token is wrong set cards by card id should send response 401 status code", function (done) {
+    let body = {
+      hint: "wdwd",
+      answer: "sky",
+      type: "image",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .put(`/cards/${card_id}`)
+      .send(body)
+      .set("access_token", 'ggrgrgr')
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["unauthorize"])
         );
         done();
       });
@@ -180,6 +207,29 @@ describe("PUT /cards/:set_card_id", function () {
         done();
       });
   });
+
+  // it("Put set cards by wrong card id should send response 404 status code", function (done) {
+  //   let body = {
+  //     hint: "something blue",
+  //     answer: "sky",
+  //     type: "image",
+  //     set_card_id: set_card_id,
+  //   };
+  //   //execute
+  //   req(app)
+  //     .put(`/cards/0`)
+  //     .set("access_token", access_token)
+  //     .send(body)
+  //     .end(function (err, res) {
+  //       if (err) done(err);
+  //       //assert
+  //       expect(res.statusCode).toEqual(404);
+  //       expect(res.body.errors).toEqual(
+  //         expect.arrayContaining(["ResourceNotFound"]),
+  // );
+  //       done();
+  //     });
+  // },10000);
 });
 
 describe("DELETE /cards/:set_card_id", function () {

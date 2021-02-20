@@ -351,6 +351,29 @@ describe("POST /login", function () {
         done();
       });
   });
+
+  it("unregister email should send response 401 status code", function (done) {
+    //setup
+    const body = {
+      email: "zqqqqqqqqq@gmail.com",
+      password: "123456",
+    };
+    //execute
+    req(app)
+      .post("/login")
+      .send(body)
+      .end(function (err, res) {
+        if (err) done(err);
+
+        //assert
+        expect(res.statusCode).toEqual(401);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["invalidEmailPassword"])
+        );
+        done();
+      });
+  });
 });
 
 describe("GET /user/:id", function () {
@@ -392,3 +415,5 @@ describe("GET /user/:id", function () {
       });
   });
 });
+
+

@@ -2,7 +2,6 @@ const { User, FlipCard, SetCard } = require("../models");
 const { checkToken } = require("../helpers/jwt");
 
 function authenticate(req, res, next) {
-  console.log("auth nih");
   try {
     let decoded = checkToken(req.headers.access_token);
     User.findOne({
@@ -11,23 +10,15 @@ function authenticate(req, res, next) {
       },
     })
       .then((userLogin) => {
-        console.log("auth 2");
-        if (!userLogin) {
-          next({ name: "unauthorize" });
-        } else {
-          console.log("auth 3");
           req.user = {
             id: +userLogin.id,
           };
           next();
-        }
       })
       .catch((err) => {
-        console.log("auth 4");
-        next(err);
+        throw err;
       });
   } catch (err) {
-    console.log("auth 5");
     next({ name: "unauthorize" });
   }
 }
@@ -74,7 +65,6 @@ function authorizeFlipCard(req, res, next) {
 }
 
 function authorizeSetCard(req, res, next) {
-  console.log("masuk ke auth");
   SetCard.findOne({
     where: {
       id: +req.params.id,
@@ -89,7 +79,6 @@ function authorizeSetCard(req, res, next) {
         if (data.user_id === +req.user.id) {
           next();
         } else {
-          console.log("unauthorize");
           next({
             name: "unauthorize",
           });

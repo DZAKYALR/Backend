@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       FlipCard.belongsTo(models.SetCard, {
         foreignKey: "set_card_id",
-      });
+      })
     }
   }
   FlipCard.init(

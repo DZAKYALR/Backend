@@ -12,7 +12,7 @@
     "test_insert": "NODE_ENV=test npx jest __test__/insertcard.test.js",
     "test_findcard": "NODE_ENV=test npx jest __test__/findcard.test.js",
     "test_putdelete": "NODE_ENV=test npx jest __test__/putdelete.test.js",
-    "coverage": "NODE_ENV=test npx jest --coverage",
+    "coverage": "NODE_ENV=test npx jest --coverage --detectOpenHandles",
     "start": "node bin/http.js",
     "dev": "NODE_ENV=development npx nodemon bin/http.js",
     "db:create": "npx sequelize-cli db:create",
