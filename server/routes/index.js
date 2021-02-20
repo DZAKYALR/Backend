@@ -13,7 +13,7 @@ routs.post("/login", authController.login)
 routs.post("/register", authController.register)
 routs.get("/user/:id", authController.getUser)
 routs.use(authenticate) 
-routs.put("/user/:id", authorizeUser, authController.getUser)
+routs.put("/user/:id", authorizeUser, authController.update)
 
 routs.get("/cards/:set_card_id", ControllerFlipCard.findBySetCardId)  //done
 routs.post("/cards/:set_card_id", ControllerFlipCard.insert)  //done

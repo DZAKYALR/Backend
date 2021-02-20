@@ -77,10 +77,11 @@ class authController {
   }
 
   static update(req, res, next) {
+    console.log('controller');
     let id = +req.params.id; 
     const obj = {
-      first_name: data.first_name,
-      last_name: data.last_name,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
     };
     User.update(obj, {
       where: {

@@ -1,32 +1,48 @@
 const req = require("supertest");
 const app = require("../app");
 const { cleanUser } = require("./helper/cleanDb");
-const { seederUser } = require("./helper/seeder.js");
+const { seederUser } = require("./helper/seeder");
 const { generateToken } = require("../helpers/jwt");
+const { User, SetCard } = require("../models/index");
 
 let access_token = "";
 let id = "";
-
-beforeAll((done) => {
-  seederUser()
-    .then((data) => {
-      access_token = generateToken({
-        email: "admin1@mail.com",
-        password: "12345678",
-        first_name: "some",
-        last_name: "one",
-      });
-      id = data.id;
-      done();
-    })
-    .catch((err) => {
-      done(err);
-    });
-});
+let set_card_id = "";
+let query = "";
 
 afterAll((done) => {
   cleanUser()
     .then(() => {
+      done();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+beforeAll((done) => {
+  seederUser()
+    .then(() => {
+      return User.findOne();
+    })
+    .then((data) => {
+      let user = {
+        id: data.id,
+        email: data.email,
+        first_name: data.first_name,
+        last_name: data.last_name,
+      };
+      access_token = generateToken(user);
+      id = +data.id;
+      return SetCard.create({
+        category: "Animals",
+        title: "img",
+        user_id: id,
+      });
+    })
+    .then((data) => {
+      query = data.title;
+      set_card_id = data.id;
       done();
     })
     .catch((err) => {
@@ -414,88 +430,81 @@ describe("GET /user/:id", function () {
         done();
       });
   });
+
+  describe("PUT /user/:id", function () {
+    //valid
+    it("valid update should send response 201 status code", function (done) {
+      //setup
+      const body = {
+        first_name: "some",
+        last_name: "one",
+      };
+      //execute
+      req(app)
+        .put(`/user/${id}`)
+        .send(body)
+        .set("access_token", access_token)
+        .end(function (err, res) {
+          if (err) done(err);
+          //assert
+          expect(res.statusCode).toEqual(200);
+          expect(typeof res.body).toEqual("object");
+          done();
+        });
+    });
+  
+    // first_name empty
+    it("first_name empty should send response 400 status code", function (done) {
+      //setup
+      const body = {
+        first_name: "",
+        last_name: "one",
+      };
+      //execute
+      req(app)
+        .put(`/user/${id}`)
+        .send(body)
+        .set("access_token", access_token)
+        .end(function (err, res) {
+          if (err) done(err);
+  
+          //assert
+          expect(res.statusCode).toEqual(400);
+          expect(typeof res.body).toEqual("object");
+          expect(res.body.errors).toEqual(
+            expect.arrayContaining(["first name cannot be empty"])
+          );
+          done();
+        });
+    });
+  
+   
+    //all empty
+    it("empty value should send response 400 status code", function (done) {
+      //setup
+      const body = {
+        first_name: "",
+        last_name: "",
+      };
+      //execute
+      req(app)
+        .put(`/user/${id}`)
+        .send(body)
+        .set("access_token", access_token)
+        .end(function (err, res) {
+          if (err) done(err);
+  
+          //assert
+          expect(res.statusCode).toEqual(400);
+          expect(typeof res.body).toEqual("object");
+          expect(res.body.errors).toEqual(
+            expect.arrayContaining([
+              "first name cannot be empty",
+            ])
+          );
+          done();
+        });
+    });
+  });
+
 });
-
-// describe("PUT /user/:id", function () {
-//   //valid
-//   it("valid update should send response 201 status code", function (done) {
-//     //setup
-//     const body = {
-//       first_name: "some",
-//       last_name: "one",
-//     };
-//     //execute
-//     req(app)
-//       .post(`/user/${id}`)
-//       .send(body)
-//       .set("access_token", access_token)
-//       .end(function (err, res) {
-//         if (err) done(err);
-//         //assert
-//         expect(res.statusCode).toEqual(201);
-//         expect(typeof res.body).toEqual("object");
-//         expect(res.body).toHaveProperty("id");
-//         expect(res.body).toHaveProperty("email");
-//         expect(res.body).toHaveProperty("first_name");
-//         expect(res.body).toHaveProperty("last_name");
-//         expect(typeof res.body.id).toEqual("number");
-//         expect(typeof res.body.first_name).toEqual("string");
-//         expect(typeof res.body.last_name).toEqual("string");
-//         expect(typeof res.body.email).toEqual("string");
-//         done();
-//       });
-//   });
-
-//   // first_name empty
-//   it("first_name empty should send response 400 status code", function (done) {
-//     //setup
-//     const body = {
-//       first_name: "",
-//       last_name: "one",
-//     };
-//     //execute
-//     req(app)
-//       .post(`/user/${id}`)
-//       .send(body)
-//       .set("access_token", access_token)
-//       .end(function (err, res) {
-//         if (err) done(err);
-
-//         //assert
-//         expect(res.statusCode).toEqual(400);
-//         expect(typeof res.body).toEqual("object");
-//         expect(res.body.errors).toEqual(
-//           expect.arrayContaining(["first name cannot be empty"])
-//         );
-//         done();
-//       });
-//   });
-
- 
-//   //all empty
-//   it("empty value should send response 400 status code", function (done) {
-//     //setup
-//     const body = {
-//       first_name: "",
-//       last_name: "",
-//     };
-//     //execute
-//     req(app)
-//       .post(`/user/${id}`)
-//       .send(body)
-//       .set("access_token", access_token)
-//       .end(function (err, res) {
-//         if (err) done(err);
-
-//         //assert
-//         expect(res.statusCode).toEqual(400);
-//         expect(typeof res.body).toEqual("object");
-//         expect(res.body.errors).toEqual(
-//           expect.arrayContaining([
-//             "first name cannot be empty",
-//           ])
-//         );
-//         done();
-//       });
-//   });
-// });
