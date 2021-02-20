@@ -16,11 +16,17 @@ class ControllerFlipCard {
   }
 
   static insert(req, res, next) {
+    let set_card_id = null
+    if (req.body.set_card_id || req.body.set_card_id === '') {
+      set_card_id = req.body.set_card_id
+    } else {
+      set_card_id = req.params.set_card_id
+    }
     let obj = {
       hint: req.body.hint,
       answer: req.body.answer,
       type: req.body.type,
-      set_card_id: req.params.set_card_id,
+      set_card_id: set_card_id,
     };
     FlipCard.create(obj)
       .then((data) => res.status(201).json(data))
