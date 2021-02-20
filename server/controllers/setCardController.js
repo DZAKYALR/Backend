@@ -49,10 +49,16 @@ class ControllerSetCard {
 
     static update(req, res, next) {
         let id = +req.params.id;
+        let user_id = null
+        if (req.body.user_id || req.body.user_id === null || req.body.user_id === '') {
+            user_id = req.body.user_id
+        } else {
+            user_id = +req.user.id
+        }
         let obj = {
             category: req.body.category,
             title: req.body.title,
-            user_id: req.user.id,
+            user_id: user_id
         };
         SetCard.update(obj, {
             where: {

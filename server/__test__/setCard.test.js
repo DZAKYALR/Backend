@@ -299,82 +299,82 @@ describe("PUT /setcard", function () {
       });
   });
 
-  // it("Put  if category empty set card should send response 400 status code", function (done) {
-  //   //setup
-  //   const body = {
-  //     category: "",
-  //     title: "img",
-  //     user_id: id,
-  //   };
-  //   console.log(access_token);
-  //   //execute
-  //   req(app)
-  //     .put(`/setcard`)
-  //     .send(body)
-  //     .set("access_token", access_token)
-  //     .end(function (err, res) {
-  //       if (err) done(err);
-  //       //assert
-  //       expect(res.statusCode).toEqual(400);
-  //       expect(typeof res.body).toEqual("object");
-  //       expect(res.body).toHaveProperty("errors");
-  //       expect(res.body.errors).toEqual(
-  //         expect.arrayContaining(["Category is required !"])
-  //       );
-  //       done();
-  //     });
-  // });
+  it("Put  if category empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "",
+      title: "img",
+      user_id: id,
+    };
+    console.log(access_token);
+    //execute
+    req(app)
+      .put(`/setcard/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Category is required !"])
+        );
+        done();
+      });
+  });
 
-  // it("Put  if title empty set card should send response 400 status code", function (done) {
-  //   //setup
-  //   const body = {
-  //     category: "Animals",
-  //     title: "",
-  //     user_id: id,
-  //   };
-  //   //execute
-  //   req(app)
-  //     .put(`/setcard`)
-  //     .send(body)
-  //     .set("access_token", access_token)
-  //     .end(function (err, res) {
-  //       if (err) done(err);
-  //       //assert
-  //       expect(res.statusCode).toEqual(400);
-  //       expect(typeof res.body).toEqual("object");
-  //       expect(res.body).toHaveProperty("errors");
-  //       expect(res.body.errors).toEqual(
-  //         expect.arrayContaining(["Title is required !"])
-  //       );
-  //       done();
-  //     });
-  // });
+  it("Put  if title empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "Animals",
+      title: "",
+      user_id: id,
+    };
+    //execute
+    req(app)
+      .put(`/setcard/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Title is required !"])
+        );
+        done();
+      });
+  });
 
-  // it("Put  if user id empty set card should send response 400 status code", function (done) {
-  //   //setup
-  //   const body = {
-  //     category: "Animals",
-  //     title: "img",
-  //     user_id: "",
-  //   };
-  //   console.log(body);
-  //   //execute
-  //   req(app)
-  //     .put(`/setcard`)
-  //     .send(body)
-  //     .set("access_token", access_token)
-  //     .end(function (err, res) {
-  //       if (err) done(err);
-  //       //assert
-  //       expect(res.statusCode).toEqual(400);
-  //       expect(typeof res.body).toEqual("object");
-  //       expect(res.body).toHaveProperty("errors");
-  //       expect(res.body.errors).toEqual(
-  //         expect.arrayContaining(["User id is required !"])
-  //       );
-  //       done();
-  //     });
-  // });
+  it("Put  if user id empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "Animals",
+      title: "img",
+      user_id: "",
+    };
+    console.log(body);
+    //execute
+    req(app)
+      .put(`/setcard/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["User id is required !"])
+        );
+        done();
+      });
+  });
 });
 
 describe("DELETE /setcard/:id", function () {
