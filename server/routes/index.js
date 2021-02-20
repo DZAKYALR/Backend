@@ -3,7 +3,7 @@ const authController = require("../controllers/authController")
 const ControllerFlipCard = require("../controllers/cardController") 
 const ControllerSetCard = require("../controllers/setCardController") 
 const { authenticate } = require('../middlewares/auth')
-const { authorizeFlipCard, authorizeSetCard } = require('../middlewares/auth')
+const { authorizeFlipCard, authorizeSetCard, authorizeUser } = require('../middlewares/auth')
 
 routs.get("/", (req, res) => {
   res.send("Welcome :)");
@@ -12,7 +12,8 @@ routs.get("/", (req, res) => {
 routs.post("/login", authController.login)
 routs.post("/register", authController.register)
 routs.get("/user/:id", authController.getUser)
-routs.use(authenticate)
+routs.use(authenticate) 
+routs.put("/user/:id", authorizeUser, authController.getUser)
 
 routs.get("/cards/:set_card_id", ControllerFlipCard.findBySetCardId)  //done
 routs.post("/cards/:set_card_id", ControllerFlipCard.insert)  //done

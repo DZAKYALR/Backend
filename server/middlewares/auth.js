@@ -4,12 +4,14 @@ const { checkToken } = require("../helpers/jwt");
 function authenticate(req, res, next) {
   try {
     let decoded = checkToken(req.headers.access_token);
+    console.log(decoded);
     User.findOne({
       where: {
         email: decoded.email,
       },
     })
       .then((userLogin) => {
+        console.log(userLogin);
           req.user = {
             id: +userLogin.id,
           };
@@ -90,8 +92,34 @@ function authorizeSetCard(req, res, next) {
     });
 }
 
+function authorizeUser(req, res, next) {
+  User.findOne({
+    where: {
+      id: +req.params.id,
+    },
+  })
+    .then((data) => {
+      if (!data) {
+        next({
+          name: "ResourceNotFound",
+        });
+      } else {
+        if (data.id === +req.user.id) {
+          next();
+        } else {
+          next({
+            name: "unauthorize",
+          });
+        }
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
 module.exports = {
   authenticate,
   authorizeSetCard,
   authorizeFlipCard,
+  authorizeUser
 };

@@ -416,4 +416,86 @@ describe("GET /user/:id", function () {
   });
 });
 
+// describe("PUT /user/:id", function () {
+//   //valid
+//   it("valid update should send response 201 status code", function (done) {
+//     //setup
+//     const body = {
+//       first_name: "some",
+//       last_name: "one",
+//     };
+//     //execute
+//     req(app)
+//       .post(`/user/${id}`)
+//       .send(body)
+//       .set("access_token", access_token)
+//       .end(function (err, res) {
+//         if (err) done(err);
+//         //assert
+//         expect(res.statusCode).toEqual(201);
+//         expect(typeof res.body).toEqual("object");
+//         expect(res.body).toHaveProperty("id");
+//         expect(res.body).toHaveProperty("email");
+//         expect(res.body).toHaveProperty("first_name");
+//         expect(res.body).toHaveProperty("last_name");
+//         expect(typeof res.body.id).toEqual("number");
+//         expect(typeof res.body.first_name).toEqual("string");
+//         expect(typeof res.body.last_name).toEqual("string");
+//         expect(typeof res.body.email).toEqual("string");
+//         done();
+//       });
+//   });
 
+//   // first_name empty
+//   it("first_name empty should send response 400 status code", function (done) {
+//     //setup
+//     const body = {
+//       first_name: "",
+//       last_name: "one",
+//     };
+//     //execute
+//     req(app)
+//       .post(`/user/${id}`)
+//       .send(body)
+//       .set("access_token", access_token)
+//       .end(function (err, res) {
+//         if (err) done(err);
+
+//         //assert
+//         expect(res.statusCode).toEqual(400);
+//         expect(typeof res.body).toEqual("object");
+//         expect(res.body.errors).toEqual(
+//           expect.arrayContaining(["first name cannot be empty"])
+//         );
+//         done();
+//       });
+//   });
+
+ 
+//   //all empty
+//   it("empty value should send response 400 status code", function (done) {
+//     //setup
+//     const body = {
+//       first_name: "",
+//       last_name: "",
+//     };
+//     //execute
+//     req(app)
+//       .post(`/user/${id}`)
+//       .send(body)
+//       .set("access_token", access_token)
+//       .end(function (err, res) {
+//         if (err) done(err);
+
+//         //assert
+//         expect(res.statusCode).toEqual(400);
+//         expect(typeof res.body).toEqual("object");
+//         expect(res.body.errors).toEqual(
+//           expect.arrayContaining([
+//             "first name cannot be empty",
+//           ])
+//         );
+//         done();
+//       });
+//   });
+// });
