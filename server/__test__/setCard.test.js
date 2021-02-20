@@ -192,6 +192,82 @@ describe("POST /setcard", function () {
         done();
       });
   });
+
+  it("Post  if category empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "",
+      title: "img",
+      user_id: id,
+    };
+    //execute
+    req(app)
+      .post(`/setcard`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Category is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Post  if title empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "Animals",
+      title: "",
+      user_id: id,
+    };
+    //execute
+    req(app)
+      .post(`/setcard`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Title is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Post  if user id empty set card should send response 400 status code", function (done) {
+    //setup
+    const body = {
+      category: "Animals",
+      title: "img",
+      user_id: "",
+    };
+    console.log(body);
+    //execute
+    req(app)
+      .post(`/setcard`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["User id is required !"])
+        );
+        done();
+      });
+  });
 });
 
 describe("PUT /setcard", function () {
