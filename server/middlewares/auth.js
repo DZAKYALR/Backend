@@ -44,11 +44,11 @@ function authorizeFlipCard(req, res, next) {
           name: "ResourceNotFound",
         });
       } else {
-          SetCard.findOne({
-            where: {
-              id: data.set_card_id,
-            },
-          })
+        SetCard.findOne({
+          where: {
+            id: data.set_card_id,
+          },
+        })
           .then((setCard) => {
             if (!setCard) {
               next({
@@ -56,15 +56,17 @@ function authorizeFlipCard(req, res, next) {
               });
             } else {
               if (+req.user.id === +setCard.user_id) {
-                next()
+                req.setCard = {
+                  id: +setCard.id,
+                };
+                next();
               }
             }
           })
           .catch((err) => {
             next(err);
           });
-        }
-      
+      }
     })
     .catch((err) => {
       next(err);
@@ -102,5 +104,5 @@ function authorizeSetCard(req, res, next) {
 module.exports = {
   authenticate,
   authorizeSetCard,
-  authorizeFlipCard
+  authorizeFlipCard,
 };

@@ -70,10 +70,21 @@ describe("GET /cards/:set_card_id", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(200);
+        expect(typeof res.body[0]).toEqual("object");
+        expect(res.body[0]).toHaveProperty("hint");
+        expect(res.body[0]).toHaveProperty("answer");
+        expect(res.body[0]).toHaveProperty("type");
+        expect(res.body[0]).toHaveProperty("set_card_id");
+        expect(typeof res.body[0].hint).toEqual("string");
+        expect(typeof res.body[0].answer).toEqual("string");
+        expect(typeof res.body[0].type).toEqual("string");
+        expect(typeof res.body[0].set_card_id).toEqual("number");
         done();
       });
   });
+});
 
+describe("PUT /cards/:set_card_id", function () {
   // get by id
   it("Put set cards by card id should send response 200 status code", function (done) {
     let body = {
@@ -95,6 +106,83 @@ describe("GET /cards/:set_card_id", function () {
       });
   });
 
+  it("Put if hint is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "",
+      answer: "sky",
+      type: "image",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .put(`/cards/${card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Hint is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Put if hint is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "",
+      type: "image",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .put(`/cards/${card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Answer is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Put if type is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .put(`/cards/${card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Type is required !"])
+        );
+        done();
+      });
+  });
+});
+
+describe("DELETE /cards/:set_card_id", function () {
   it("Delete cards by card id should send response 200 status code", function (done) {
     //execute
     req(app)
@@ -107,7 +195,8 @@ describe("GET /cards/:set_card_id", function () {
         done();
       });
   });
-
+});
+describe("POST /cards/:set_card_id", function () {
   // get by id
   it("Post set cards by card id should send response 201 status code", function (done) {
     let body = {
@@ -125,6 +214,106 @@ describe("GET /cards/:set_card_id", function () {
         if (err) done(err);
         //assert
         expect(res.statusCode).toEqual(201);
+        done();
+      });
+  });
+
+  it("Post if hint is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "",
+      answer: "sky",
+      type: "image",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .post(`/cards/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Hint is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Post if hint is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "",
+      type: "image",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .post(`/cards/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Answer is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Post if type is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "",
+      set_card_id: set_card_id,
+    };
+    //execute
+    req(app)
+      .post(`/cards/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Type is required !"])
+        );
+        done();
+      });
+  });
+
+  it("Post if set card id is empty  set cards by card id should send response 400 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "img",
+      set_card_id: "",
+    };
+    //execute
+    req(app)
+      .post(`/cards/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(400);
+        expect(typeof res.body).toEqual("object");
+        expect(res.body).toHaveProperty("errors");
+        expect(res.body.errors).toEqual(
+          expect.arrayContaining(["Set card id is required !"])
+        );
         done();
       });
   });
