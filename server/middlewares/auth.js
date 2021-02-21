@@ -2,7 +2,6 @@ const { User, FlipCard, SetCard } = require("../models");
 const { checkToken } = require("../helpers/jwt");
 
 function authenticate(req, res, next) {
-  console.log('authenticate');
   try {
     let decoded = checkToken(req.headers.access_token);
     User.findOne({
@@ -14,11 +13,9 @@ function authenticate(req, res, next) {
           req.user = {
             id: +userLogin.id,
           };
-          console.log('sini mas ?');
           next();
       })
       .catch((err) => {
-        console.log('error di authen');
         throw err;
       });
   } catch (err) {
@@ -94,17 +91,13 @@ function authorizeSetCard(req, res, next) {
 }
 
 function authorizeUser(req, res, next) {
-  console.log('authorrize');
-
   User.findOne({
     where: {
       id: +req.params.id,
     },
   })
     .then((data) => {
-      console.log('here');
       if (!data) {
-        console.log('hello');
         next({
           name: "ResourceNotFound",
         });
