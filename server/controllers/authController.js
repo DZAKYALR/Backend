@@ -43,7 +43,7 @@ class authController {
             last_name: data.last_name,
           };
           const access_token = generateToken(payload);
-          res.status(200).json({ access_token });
+          res.status(200).json({ access_token, payload });
         } else {
           throw { name: "invalidEmailPassword" };
         }
@@ -77,7 +77,6 @@ class authController {
   }
 
   static update(req, res, next) {
-    console.log('controller');
     let id = +req.params.id; 
     const obj = {
       first_name: req.body.first_name,
