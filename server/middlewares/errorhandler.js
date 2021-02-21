@@ -25,9 +25,9 @@ const errorHandler = (err, req, res, next) => {
     case "unauthorize":
       res.status(401).json({ errors: ["unauthorize"] });
       break;
-    // default:
-    //   res.status(500).json({ errors: [err.name] });
-    //   break;
+    default:
+      res.status(500).json({ errors: ['Internal Server Error'] });
+      break;
   }
 };
 
