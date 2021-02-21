@@ -418,7 +418,7 @@ describe("GET /user/:id", function () {
   it("should send response 404 status code not found data", function (done) {
     //execute
     req(app)
-      .get(`/user/1`)
+      .get(`/user/0`)
       // .set('access_token', access_token)
       .end(function (err, res) {
         if (err) done(err);
