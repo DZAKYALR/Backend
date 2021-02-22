@@ -1,9 +1,13 @@
-const { SetCard } = require("../models/index");
+const { SetCard, User } = require("../models/index");
 const { Op } = require("sequelize");
 
 class ControllerSetCard {
     static findAll(req, res, next) {
-        SetCard.findAll()
+        SetCard.findAll({ include: [{
+            model: User,
+            attributes: ["id", 'email', 'first_name', 'last_name' ]
+            }] 
+         })
             .then((data) => {
                 res.status(200).json(data);
             })
