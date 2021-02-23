@@ -22,8 +22,12 @@ class ControllerSetCard {
                 title: {
                     [Op.iLike]: `%${req.params.query}%`,
                 },
-            },
-        })
+            }
+            ,include: [{
+                model: User,
+                attributes: ["id", 'email', 'first_name', 'last_name' ]
+                }] 
+             })
             .then((data) => {
                 res.status(200).json(data);
             })
