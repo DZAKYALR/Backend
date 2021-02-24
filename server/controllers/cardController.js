@@ -11,8 +11,8 @@ class ControllerFlipCard {
         res.status(200).json(data);
       })
       .catch((err) => {
-        next(err);
-      });
+        res.status(500).json(err)
+      })
   }
 
   static insert(req, res, next) {

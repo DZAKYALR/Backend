@@ -77,7 +77,7 @@ class authController {
   }
 
   static update(req, res, next) {
-    let id = +req.params.id; 
+    let id = +req.params.id;
     const obj = {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
@@ -89,10 +89,7 @@ class authController {
       returning: true,
     })
       .then((data) => {
-        if (data[0]) {
-          res.status(200).json(data[1]);
-        }
-        
+        res.status(200).json(data[1]);
       })
       .catch((err) => {
         next(err);

@@ -1,7 +1,5 @@
 const req = require("supertest");
 const app = require("../app");
-const { cleanUser } = require("./helper/cleanDb");
-const { seederUser } = require("./helper/seeder");
 const { generateToken } = require("../helpers/jwt");
 const { User, SetCard } = require("../models/index");
 
@@ -10,8 +8,30 @@ let id = "";
 let set_card_id = "";
 let query = "";
 
+function seederUser(done) {
+  const body = {
+    first_name: "some",
+    last_name: "one",
+    email: "a@gmail.com",
+    password: "123456",
+  };
+    return User.create(body);
+}
+
+function seederUser2(done) {
+  const body = {
+    first_name: "some2",
+    last_name: "on2e",
+    email: "a@gmai2l.com",
+    password: "1234562",
+  };
+    return User.create(body);
+}
+
+
+
 afterAll((done) => {
-  cleanUser()
+  User.destroy({ where: {} })
     .then(() => {
       done();
     })
@@ -19,8 +39,8 @@ afterAll((done) => {
       console.log(err);
     });
 });
-
 beforeAll((done) => {
+  seederUser2()
   seederUser()
     .then(() => {
       return User.findOne();
@@ -49,6 +69,9 @@ beforeAll((done) => {
       console.log(err);
     });
 });
+
+
+
 
 describe("POST /register", function () {
   //duplicate email
@@ -452,7 +475,27 @@ describe("GET /user/:id", function () {
           done();
         });
     });
-  
+
+    it("invalid update user id should send response 500 status code", function (done) {
+      //setup
+      const body = {
+        first_name: "some",
+        last_name: "one",
+      };
+      //execute
+      req(app)
+        .put(`/user/999`)
+        .send(body)
+        .set("access_token", access_token)
+        .end(function (err, res) {
+          if (err) done(err);
+          //assert
+          expect(res.statusCode).toEqual(500);
+          expect(typeof res.body).toEqual("object");
+          done();
+        });
+    });
+
     // first_name empty
     it("first_name empty should send response 400 status code", function (done) {
       //setup

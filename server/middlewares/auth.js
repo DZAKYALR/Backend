@@ -10,13 +10,18 @@ function authenticate(req, res, next) {
       },
     })
       .then((userLogin) => {
+        if (userLogin !== null) {
           req.user = {
             id: +userLogin.id,
           };
           next();
+        } else {
+          next('unidentified user');
+        }
+       
       })
       .catch((err) => {
-        throw err;
+        next(err);
       });
   } catch (err) {
     next({ name: "unauthorize" });
@@ -30,34 +35,22 @@ function authorizeFlipCard(req, res, next) {
     },
   })
     .then((data) => {
-      if (!data.set_card_id) {
-        next({
-          name: "ResourceNotFound",
-        });
-      } else {
-        SetCard.findOne({
-          where: {
-            id: data.set_card_id,
-          },
+      SetCard.findOne({
+        where: {
+          id: data.set_card_id,
+        },
+      })
+        .then((setCard) => {
+          if (+req.user.id === +setCard.user_id) {
+            req.setCard = {
+              id: +setCard.id,
+            };
+            next()
+          }
         })
-          .then((setCard) => {
-            if (!setCard) {
-              next({
-                name: "ResourceNotFound",
-              });
-            } else {
-              if (+req.user.id === +setCard.user_id) {
-                req.setCard = {
-                  id: +setCard.id,
-                };
-                next();
-              }
-            }
-          })
-          .catch((err) => {
-            next(err);
-          });
-      }
+        .catch((err) => {
+          next(err);
+        });
     })
     .catch((err) => {
       next(err);
@@ -71,22 +64,16 @@ function authorizeSetCard(req, res, next) {
     },
   })
     .then((data) => {
-      if (!data) {
-        next({
-          name: "ResourceNotFound",
-        });
+      if (data.user_id === +req.user.id) {
+        next()
       } else {
-        if (data.user_id === +req.user.id) {
-          next();
-        } else {
-          next({
-            name: "unauthorize",
-          });
-        }
+        next({
+          name: "unauthorize",
+        })
       }
     })
     .catch((err) => {
-      next(err);
+      next(err)
     });
 }
 
@@ -97,18 +84,12 @@ function authorizeUser(req, res, next) {
     },
   })
     .then((data) => {
-      if (!data) {
-        next({
-          name: "ResourceNotFound",
-        });
+      if (data.id === +req.user.id) {
+        next();
       } else {
-        if (data.id === +req.user.id) {
-          next();
-        } else {
-          next({
-            name: "unauthorize",
-          });
-        }
+        next({
+          name: "unauthorize",
+        });
       }
     })
     .catch((err) => {

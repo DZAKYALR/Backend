@@ -1,7 +1,5 @@
 const req = require("supertest");
 const app = require("../app");
-const { cleanUser } = require("./helper/cleanDb");
-const { seederUser } = require("./helper/seeder");
 const { generateToken } = require("../helpers/jwt");
 const { User, SetCard } = require("../models/index");
 
@@ -10,8 +8,26 @@ let id = "";
 let set_card_id = "";
 let query = "";
 
+function seederUser(done) {
+  const body = {
+    first_name: "some",
+    last_name: "one",
+    email: "a@gmail.com",
+    password: "123456",
+  };
+    return User.create(body);
+}
+
+const user2 = {
+  id: 89,
+  email: "a@gmai2l12.com",
+  first_name: "some2",
+  last_name: "on2e"
+};
+let access_wrong = generateToken(user2);
+
 afterAll((done) => {
-  cleanUser()
+  User.destroy({ where: {} })
     .then(() => {
       done();
     })
@@ -68,6 +84,32 @@ describe("GET /setcard", function () {
         expect(typeof res.body[0].category).toEqual("string");
         expect(typeof res.body[0].title).toEqual("string");
         expect(typeof res.body[0].user_id).toEqual("number");
+        done();
+      });
+  });
+
+  it("Find set card should send response 500 status code", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard`)
+      .set("access_token", access_wrong)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(500);
+        done();
+      });
+  });
+
+  it("Find set card should send response 500 status code", function (done) {
+    //execute
+    req(app)
+      .get(`/setcard`)
+      .set("access_token", access_wrong)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(500);
         done();
       });
   });
@@ -279,6 +321,33 @@ describe("PUT /setcard", function () {
       category: "Animals2",
       title: "img2",
       user_id: id,
+    };
+    //execute
+    req(app)
+      .put(`/setcard/${set_card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(200);
+        expect(typeof res.body[0]).toEqual("object");
+        expect(res.body[0]).toHaveProperty("category");
+        expect(res.body[0]).toHaveProperty("title");
+        expect(res.body[0]).toHaveProperty("user_id");
+        expect(typeof res.body[0].category).toEqual("string");
+        expect(typeof res.body[0].title).toEqual("string");
+        expect(typeof res.body[0].user_id).toEqual("number");
+        done();
+      });
+  });
+
+  it("Put set card should send response 200 status code 2", function (done) {
+    //setup
+    const body = {
+      category: "Animals2",
+      title: "img2",
+      user_id: false,
     };
     //execute
     req(app)

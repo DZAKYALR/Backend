@@ -1,17 +1,36 @@
 const req = require("supertest");
 const app = require("../app");
-const { cleanUser } = require("./helper/cleanDb");
-const { seederUser } = require("./helper/seeder");
 const { generateToken } = require("../helpers/jwt");
 const { User, SetCard, FlipCard } = require("../models/index");
 
 let access_token = "";
+let access_token2 = "";
 let id = "";
+let id2 = ''
 let set_card_id = "";
 let card_id = "";
 
+function seederUser(done) {
+  const body = {
+    first_name: "some",
+    last_name: "one",
+    email: "a@gmail.com",
+    password: "123456",
+  };
+    return User.create(body);
+}
+function seederUser2(done) {
+  const romeo = {
+    first_name: "some2",
+    last_name: "on2e",
+    email: "a@gmai2l.com",
+    password: "1234562",
+  };
+    return User.create(romeo);
+}
+
 afterAll((done) => {
-  cleanUser()
+  User.destroy({ where: {} })
     .then(() => {
       done();
     })
@@ -21,6 +40,22 @@ afterAll((done) => {
 });
 
 beforeAll((done) => {
+  seederUser2()
+  .then(() => {
+    return User.findByPk(2);
+  })
+  .then((data) => {
+    let user = {
+      id: data.id,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+    };
+    access_token2 = generateToken(user);
+    id2 = +data.id;})
+  .catch(err => {
+    console.log(err)
+  })
   seederUser()
     .then(() => {
       return User.findOne();
@@ -82,6 +117,21 @@ describe("GET /cards/:set_card_id", function () {
         done();
       });
   });
+
+  it("Find card by set card id should send response 200 status code", function (done) {
+    //execute
+    req(app)
+      .get(`/cards/undefined`)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(500);
+        done();
+      });
+  });
+
+
 });
 
 describe("PUT /cards/:set_card_id", function () {
@@ -106,7 +156,64 @@ describe("PUT /cards/:set_card_id", function () {
       });
   });
 
+  it("Put set cards by card id should send response 401 status code ", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "image",
+    };
+    //execute
+    req(app)
+      .put(`/cards/9999`)
+      .send(body)
+      .set("access_token", access_token2)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(401);
+        done();
+      });
+  });
 
+  it("Put set cards by wrong card id should send response 500 status code", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "image",
+      set_card_id: 9999,
+    };
+    //execute
+    req(app)
+      .put(`/cards/9999`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(500);
+        done();
+      });
+  });
+
+  it("Put set cards by card id should send response 200 status code 2", function (done) {
+    let body = {
+      hint: "something blue",
+      answer: "sky",
+      type: "image",
+      set_card_id: '',
+    };
+    //execute
+    req(app)
+      .put(`/cards/${card_id}`)
+      .send(body)
+      .set("access_token", access_token)
+      .end(function (err, res) {
+        if (err) done(err);
+        //assert
+        expect(res.statusCode).toEqual(200);
+        done();
+      });
+  });
 
   it("Put if hint is empty  set cards by card id should send response 400 status code", function (done) {
     let body = {
